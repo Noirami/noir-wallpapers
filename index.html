@@ -1,0 +1,444 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOIR — Wallpaper Collection</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #090909;
+  color: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+header {
+  height: 75px;
+  padding: 0 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #222;
+  position: sticky;
+  top: 0;
+  background: rgba(9,9,9,.94);
+  backdrop-filter: blur(15px);
+  z-index: 10;
+}
+
+.logo {
+  font-size: 27px;
+  font-weight: 900;
+  letter-spacing: 5px;
+}
+
+.logo span {
+  color: #a78bfa;
+}
+
+nav {
+  display: flex;
+  gap: 25px;
+}
+
+nav a {
+  color: #aaa;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+nav a:hover {
+  color: white;
+}
+
+.hero {
+  padding: 85px 6% 55px;
+  text-align: center;
+}
+
+.eyebrow {
+  color: #a78bfa;
+  letter-spacing: 4px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.hero h1 {
+  font-size: clamp(38px, 7vw, 75px);
+  letter-spacing: -3px;
+  margin: 20px 0;
+  line-height: 1.05;
+}
+
+.hero h1 span {
+  color: #a78bfa;
+}
+
+.hero p {
+  color: #999;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.search {
+  max-width: 530px;
+  margin: 30px auto 0;
+  display: flex;
+  background: #171717;
+  border: 1px solid #303030;
+  border-radius: 12px;
+  padding: 5px;
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 14px;
+  color: white;
+  font-size: 14px;
+}
+
+.search button {
+  background: #a78bfa;
+  border: none;
+  padding: 0 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+main {
+  padding: 25px 6% 80px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.section-heading h2 {
+  font-size: 23px;
+}
+
+.section-heading p {
+  color: #777;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.categories {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 25px;
+}
+
+.category {
+  background: #171717;
+  color: #aaa;
+  border: 1px solid #292929;
+  padding: 10px 17px;
+  border-radius: 30px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.category.active,
+.category:hover {
+  background: #a78bfa;
+  color: #090909;
+  border-color: #a78bfa;
+}
+
+/* Wallpaper gallery */
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 17px;
+  align-items: start;
+}
+
+.wallpaper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #191919;
+  cursor: pointer;
+  width: 100%;
+}
+
+.wallpaper img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform .4s;
+}
+
+.wallpaper:hover img {
+  transform: scale(1.05);
+}
+
+.wallpaper-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 35px 13px 13px;
+  background: linear-gradient(transparent, rgba(0,0,0,.9));
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.wallpaper:hover .wallpaper-info {
+  opacity: 1;
+}
+
+.wallpaper-info span {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.wallpaper-info small {
+  font-size: 10px;
+  color: #ccc;
+}
+
+.empty {
+  display: none;
+  color: #888;
+  text-align: center;
+  padding: 50px;
+}
+
+footer {
+  border-top: 1px solid #222;
+  padding: 35px 6%;
+  text-align: center;
+  color: #777;
+  font-size: 12px;
+  line-height: 2;
+}
+
+/* Preview window */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(0,0,0,.93);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-content {
+  max-width: 450px;
+  width: 100%;
+  text-align: center;
+}
+
+.modal img {
+  max-width: 100%;
+  max-height: 65vh;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.modal h3 {
+  margin: 15px;
+}
+
+.modal button {
+  background: #a78bfa;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin: 5px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.modal .close {
+  background: #252525;
+  color: white;
+}
+
+@media(max-width: 850px) {
+  .gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media(max-width: 550px) {
+  header {
+    padding: 0 5%;
+  }
+
+  nav {
+    gap: 12px;
+  }
+
+  nav a {
+    font-size: 11px;
+  }
+
+  .hero {
+    padding: 65px 5% 40px;
+  }
+
+  main {
+    padding: 20px 5% 60px;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+@media(hover: none) {
+  .wallpaper-info {
+    opacity: 1;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">NOIR<span>.</span></div>
+  <nav>
+    <a href="#">Discover</a>
+    <a href="#gallery">Wallpapers</a>
+    <a href="#footer">About</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">THE ART OF YOUR SCREEN</div>
+  <h1>Make your screen<br><span>feel different.</span></h1>
+  <p>Carefully selected wallpapers for your digital world.<br>Discover your next favourite background.</p>
+
+  <div class="search">
+    <input id="searchInput" type="text" placeholder="Search wallpapers, cars, nature...">
+    <button onclick="filterWallpapers()">Search</button>
+  </div>
+</section>
+
+<main id="gallery">
+  <div class="section-heading">
+    <div>
+      <h2>Explore collection</h2>
+      <p>Curated visuals. Endless inspiration.</p>
+    </div>
+    <small style="color:#888">DEMO COLLECTION</small>
+  </div>
+
+  <div class="categories">
+    <button class="category active" data-category="all">All</button>
+    <button class="category" data-category="nature">Nature</button>
+    <button class="category" data-category="cars">Cars</button>
+    <button class="category" data-category="space">Space</button>
+    <button class="category" data-category="architecture">Architecture</button>
+    <button class="category" data-category="minimal">Minimal</button>
+  </div>
+
+  <div class="gallery" id="wallpaperGallery">
+
+    <div class="wallpaper" data-category="urban" data-name="midnight city neon" onclick="window.location.href='wallpaper.html?id=midnight-city'">
+      <img src="images/midnight-city.jpg" alt="Midnight City">
+      <div class="wallpaper-info">
+        <span>Midnight City</span>
+        <small>Urban</small>
+      </div>
+    </div>
+
+    <div class="wallpaper" data-category="minimal" data-name="black marble dark gold" onclick="window.location.href='wallpaper.html?id=black-marble'">
+      <img src="images/black-marble.jpg" alt="Black Marble">
+      <div class="wallpaper-info">
+        <span>Black Marble</span>
+        <small>Abstract</small>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="empty" id="emptyMessage">
+    No wallpapers found. Try another search.
+  </div>
+</main>
+
+<footer id="footer">
+  <div class="logo">NOIR<span>.</span></div>
+  Curated for your screen. Made with passion.
+  <br>© 2026 NOIR. Demo website.
+</footer>
+
+<script>
+const cards = document.querySelectorAll(".wallpaper");
+const categoryButtons = document.querySelectorAll(".category");
+const searchInput = document.getElementById("searchInput");
+const emptyMessage = document.getElementById("emptyMessage");
+
+let selectedCategory = "all";
+
+function filterWallpapers() {
+  const search = searchInput.value.toLowerCase().trim();
+  let visible = 0;
+
+  cards.forEach(card => {
+    const category = card.dataset.category;
+    const name = card.dataset.name;
+
+    const matchesCategory =
+      selectedCategory === "all" || category === selectedCategory;
+
+    const matchesSearch = name.includes(search);
+
+    const show = matchesCategory && matchesSearch;
+    card.style.display = show ? "block" : "none";
+
+    if (show) visible++;
+  });
+
+  emptyMessage.style.display = visible === 0 ? "block" : "none";
+}
+
+categoryButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    categoryButtons.forEach(b => b.classList.remove("active"));
+    button.classList.add("active");
+
+    selectedCategory = button.dataset.category;
+    filterWallpapers();
+  });
+});
+
+searchInput.addEventListener("input", filterWallpapers);
+</script>
+
+</body>
+</html>
